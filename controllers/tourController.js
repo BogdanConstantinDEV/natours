@@ -1,15 +1,27 @@
 const Tour = require('../models/tourModel')
 
 
-// get all tours
+
+// get all tours queryed
 exports.getAllTours = async (req, res) => {
     try {
-        const allTours = await Tour.find()
+
+        // build query
+        const queryObj = { ...req.query }
+        const excludedFields = ['page', 'sort', 'fields', 'limit']
+        excludedFields.forEach(el => delete queryObj[el])
+        let queryStr = JSON.stringify(queryObj)
+        queryStr = queryStr.replace(/\b(gte|gt|lt|lte)\b/g, match => `$${match}`)
+        const query = Tour.find(JSON.parse(queryStr))
+
+        // execute query
+        const qTours = await query
+
         res.status(200).json({
             status: 'success',
-            results: allTours.length,
+            results: qTours.length,
             data: {
-                tours: allTours
+                tours: qTours
             }
         })
     }
@@ -20,6 +32,7 @@ exports.getAllTours = async (req, res) => {
         })
     }
 }
+
 
 
 // create a tour
@@ -42,6 +55,7 @@ exports.createTour = async (req, res) => {
 }
 
 
+
 // get a tour
 exports.getTour = async (req, res) => {
     try {
@@ -60,6 +74,7 @@ exports.getTour = async (req, res) => {
         })
     }
 }
+
 
 
 // update tour
@@ -83,6 +98,7 @@ exports.updateTour = async (req, res) => {
         })
     }
 }
+
 
 
 // delete tour
