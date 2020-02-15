@@ -12,7 +12,35 @@ exports.getAllTours = async (req, res) => {
         excludedFields.forEach(el => delete queryObj[el])
         let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace(/\b(gte|gt|lt|lte)\b/g, match => `$${match}`)
-        const query = Tour.find(JSON.parse(queryStr))
+        let query = Tour.find(JSON.parse(queryStr))
+
+        // sorting
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(',').join()
+            query = query.sort(sortBy)
+        } else {
+            query = query.sort('-createdAt')
+        }
+
+        // field limiting
+        if (req.query.fields) {
+            const fields = req.query.fields.split(',').join(' ')
+            query = query.select(fields)
+        } else {
+            query = query.select('-__v')
+        }
+
+        // pagination
+        const page = req.query.page * 1 || 1
+        const limit = req.query.limit * 1 || 100
+        const skip = (page - 1) * limit
+        query = query.skip(skip).limit(limit)
+        if (req.query.page) {
+            const numTours = await Tour.countDocuments()
+            if (skip >= numTours) throw new Error('This page does not exist')
+        }
+
+
 
         // execute query
         const qTours = await query
