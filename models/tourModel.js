@@ -7,7 +7,10 @@ const tourSchema = new mongoose.Schema(
             type: String,
             required: [true, 'tour must have a name'],
             unique: true,
-            trim: true
+            trim: true,
+            maxlength: [40, 'name length must be <= 40'],
+            minlength: [10, 'name lenght must be >= 10']
+
         },
         slug: {
             type: String
@@ -20,10 +23,19 @@ const tourSchema = new mongoose.Schema(
             type: Number,
             required: [true, 'tour must have a group size']
         },
-        difficulty: String,
+        difficulty: {
+            type: String,
+            required: [true, 'tour must have a difficulty'],
+            enum: {
+                values: ['easy', 'medium', 'difficult'],
+                message: 'difficulty must be : easy, medium or difficult'
+            }
+        },
         ratingsAverage: {
             type: Number,
-            default: 4.5
+            default: 4.5,
+            min: [1, 'rating must be >= 1'],
+            max: [5, 'rating must be <= 5']
         },
         ratingsQuantity: {
             type: Number,
@@ -34,15 +46,25 @@ const tourSchema = new mongoose.Schema(
             type: Number,
             required: [true, 'tour must have a price']
         },
-        priceDiscount: Number,
+        priceDiscount: {
+            type: Number,
+            validate: {
+                validator: function (val) {
+                    return val < this.price
+                }
+            },
+            message: 'priceDiscount must be lower then regular price'
+        },
         summary: {
             type: String,
             required: [true, 'tour must have a summary'],
-            trim: true
+            trim: true,
+            maxlength: [200, 'summary length must be <= 200']
         },
         description: {
             type: String,
-            trim: true
+            trim: true,
+            maxlength: [500, 'description length must be <= 500']
         },
         imageCover: {
             type: String,
