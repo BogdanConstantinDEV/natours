@@ -3,7 +3,7 @@ const AppError = require('../util/appError')
 
 // handle wrong DB id error
 const handleCastError = err => {
-    return new AppError(`Invalid ${err.path}: ${err.value} 💥`, 400)
+    return new AppError(`Invalid ${err.path}: ${err.value}💥`, 400)
 }
 
 // handle duplicate key error
@@ -18,6 +18,7 @@ const handleValidationError = err => {
     return new AppError(`Invalid fields: ${errorMessages.join(' 👀  ')}`, 400)
 }
 
+// 
 const sendErrorDev = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -33,7 +34,7 @@ const sendErrorProd = (err, res) => {
             message: err.message
         })
     } else {
-        console.error('ERROR', err)
+        console.error('ERROR💥', err)
         res.status(500).json({
             status: 'error',
             message: 'something very bad happened'
