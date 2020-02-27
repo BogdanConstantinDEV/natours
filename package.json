@@ -4,6 +4,7 @@
   "description": "practicing what I learned",
   "main": "app.js",
   "dependencies": {
+    "bcrypt": "^4.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.8.11",
