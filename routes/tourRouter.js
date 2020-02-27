@@ -4,14 +4,23 @@ const tourController = require('../controllers/tourController')
 
 const router = express.Router()
 
+// top five tours
 router.route('/top-five-tours')
     .get(tourController.topFiveTours, tourController.getAllTours)
 
+// tour stats
 router.route('/tour-stats')
     .get(tourController.getTourStats)
 
+// monthly plan
 router.route('/monthly-plan/:year')
     .get(tourController.getMonthlyPlan)
+
+
+
+
+
+
 
 router.route('/')
     .get(tourController.getAllTours)

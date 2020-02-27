@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
             required: [true, 'user must have a password'],
             minlength: [8, 'password length must be >= 8']
         },
-        passwordChange: {
+        passwordConfirm: {
             type: String,
             required: [true, 'user must confirm the password'],
             validate: {
@@ -39,5 +39,5 @@ const userSchema = new mongoose.Schema(
     }
 )
 
-const Tour = new mongoose.model('Tour', userSchema)
-module.exports = Tour
+const User = new mongoose.model('User', userSchema)
+module.exports = User
