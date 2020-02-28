@@ -8,7 +8,7 @@ const router = express.Router()
 
 // sign up
 router.post('/signup', authController.signUp)
-
+router.post('/login', authController.login)
 
 
 router.route('/')
