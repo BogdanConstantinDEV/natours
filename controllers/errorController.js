@@ -1,6 +1,8 @@
 const AppError = require('../util/appError')
 
 
+
+
 // handle wrong DB id error
 const handleCastError = err => {
     return new AppError(`Invalid ${err.path}: ${err.value}💥`, 400)
@@ -18,7 +20,24 @@ const handleValidationError = err => {
     return new AppError(`Invalid fields: ${errorMessages.join(' 👀  ')}`, 400)
 }
 
-// 
+// handle web token error
+const handleWebTokenError = () => {
+    return new AppError('Invalid Web Token', 401)
+}
+
+// handle token expired error
+const handleTokenExpiredError = () => {
+    return new AppError('Token has expired! Please log in again', 401)
+}
+
+
+
+
+
+
+
+
+
 const sendErrorDev = (err, res) => {
     res.status(err.statusCode).json({
         status: err.status,
@@ -42,6 +61,15 @@ const sendErrorProd = (err, res) => {
     }
 }
 
+
+
+
+
+
+
+
+
+
 module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500
     err.status = err.status || 'error'
@@ -59,7 +87,13 @@ module.exports = (err, req, res, next) => {
         if (error.code === 11000) error = handleDuplicateError(error)
 
         // valuidation error
-        if (error.name = 'ValidationError') error = handleValidationError(error)
+        if (error.name === 'ValidationError') error = handleValidationError(error)
+
+        // invalid web token
+        if (error.name === 'JsonWebTokenError') error = handleWebTokenError()
+
+        // token expired error
+        if (error.name === 'TokenExpiredError') error = handleTokenExpiredError()
 
         sendErrorProd(error, res)
     }

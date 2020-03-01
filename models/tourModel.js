@@ -107,12 +107,12 @@ tourSchema.pre('save', function (next) {
 
 // query middleware
 tourSchema.pre(/^find/, function (next) {
-    this.find({ secretTour: { $ne: true } })
+    // this.find({ secretTour: { $ne: true } })
     this.start = Date.now()
     next()
 })
 tourSchema.post(/^find/, function (docs, next) {
-    console.log(`query completed in ${Date.now() - this.start} miliseconds`)
+    // console.log(`query completed in ${Date.now() - this.start} miliseconds`)
     next()
 })
 
