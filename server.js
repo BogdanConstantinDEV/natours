@@ -24,8 +24,8 @@ mongoose
 
 
 // connect to server
-const server = app.listen(6000, '127.0.0.1', () => {
-    console.log('server running on port 6000')
+const server = app.listen(3000, '127.0.0.1', () => {
+    console.log('server running on port 3000')
 })
 
 
