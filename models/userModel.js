@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
@@ -44,7 +45,9 @@ const userSchema = new mongoose.Schema(
                 message: 'password should match'
             }
         },
-        passwordChangedAt: Date
+        passwordChangedAt: Date,
+        passwordResetToken: String,
+        passwordResetExpires: Date
     }
 )
 
@@ -74,6 +77,22 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
     return false
 }
+
+// create reset token
+userSchema.methods.createResetPasswordToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex')
+
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex')
+    this.passwordResetExpires = Date.now() + 1000 * 60 * 10
+    console.log({ resetToken }, this.passwordResetToken)
+
+    return resetToken
+}
+
+
 
 
 const User = new mongoose.model('User', userSchema)
