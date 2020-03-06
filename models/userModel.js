@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ['admin', 'lead-guide', 'guide', 'admin'],
+            enum: ['admin', 'lead-guide', 'guide', 'user'],
             default: 'user'
         },
         password: {
@@ -60,6 +60,14 @@ userSchema.pre('save', async function (next) {
     this.passwordConfirm = undefined
 
     next()
+})
+
+// add changed password timestamp
+userSchema.pre('save', function (next) {
+    if (!this.isModified('password') || this.isNew) return next()
+    this.passwordChangedAt = Date.now() - 1000
+
+    return next()
 })
 
 // verify if passwords match

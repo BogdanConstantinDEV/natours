@@ -12,7 +12,7 @@ router.post('/login', authController.login)
 
 // forgot & restart password
 router.post('/forgot-password', authController.forgotPassword)
-router.post('/reset-password', authController.resetPassword)
+router.patch('/reset-password/:token', authController.resetPassword)
 
 
 

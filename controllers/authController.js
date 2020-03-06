@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const { promisify } = require('util')
 const UserModel = require('../models/userModel')
 const catchAsync = require('../util/catchAsync')
@@ -157,4 +158,28 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 // reset password
 exports.resetPassword = catchAsync(async (req, res, next) => {
 
+    // find the user based on email token
+    const hashedPassword = crypto
+        .createHash('sha256')
+        .update(req.params.token)
+        .digest('hex')
+    const user = await UserModel.findOne({
+        passwordResetToken: hashedPassword,
+        passwordResetExpires: { $gt: Date.now() }
+    })
+    if (!user) return next(new AppError('Token is invalid or has expired', 400))
+
+    // change password in DB
+    user.password = req.body.password
+    user.passwordConfirm = req.body.passwordConfirm
+    user.passwordResetToken = undefined
+    user.passwordResetExpires = undefined
+    await user.save()
+
+    // log user in (return token)
+    const token = signToken(user._id)
+    res.status(200).json({
+        status: 'success',
+        token
+    })
 })
