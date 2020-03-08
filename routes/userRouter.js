@@ -10,9 +10,13 @@ const router = express.Router()
 router.post('/signup', authController.signUp)
 router.post('/login', authController.login)
 
-// forgot & restart password
+// forgot/restart/update password
 router.post('/forgot-password', authController.forgotPassword)
 router.patch('/reset-password/:token', authController.resetPassword)
+router.patch('/update-password',
+    authController.protect,
+    authController.updatePassword
+)
 
 
 

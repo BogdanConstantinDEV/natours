@@ -16,6 +16,15 @@ const signToken = id => {
     })
 }
 
+// create and send token function
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id)
+    res.status(statusCode).json({
+        status: 'success',
+        token
+    })
+}
+
 
 
 
@@ -30,14 +39,7 @@ exports.signUp = catchAsync(async (req, res) => {
         passwordConfirm: req.body.passwordConfirm
     })
 
-    const token = signToken(user._id)
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            user
-        }
-    })
+    createSendToken(user, 201, res)
 })
 
 
@@ -58,11 +60,7 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Invalid email or password', 401))
     }
 
-    const token = signToken(user._id)
-    res.status(200).json({
-        status: 'success',
-        token
-    })
+    createSendToken(user, 200, res)
 })
 
 
@@ -177,9 +175,29 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     await user.save()
 
     // log user in (return token)
-    const token = signToken(user._id)
-    res.status(200).json({
-        status: 'success',
-        token
-    })
+    createSendToken(user, 200, res)
+})
+
+
+
+
+// update password
+exports.updatePassword = catchAsync(async (req, res, next) => {
+
+    // find user based on login token
+    const user = await UserModel.findById(req.user._id).select('+password')
+
+    // check if passwordsmatch
+    if (!(await user.correctPassword(req.body.oldPassword, user.password))) {
+        return next(new AppError('Password you entered is not valid', 400))
+    }
+
+    // update password in DB
+    user.password = req.body.newPassword
+    user.passwordConfirm = req.body.newPasswordConfirm
+    await user.save()
+
+    // log user in (return token)
+    createSendToken(user, 200, res)
+
 })
