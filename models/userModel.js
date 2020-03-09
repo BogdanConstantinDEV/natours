@@ -47,7 +47,12 @@ const userSchema = new mongoose.Schema(
         },
         passwordChangedAt: Date,
         passwordResetToken: String,
-        passwordResetExpires: Date
+        passwordResetExpires: Date,
+        active: {
+            type: Boolean,
+            default: true,
+            select: false
+        }
     }
 )
 
@@ -69,6 +74,17 @@ userSchema.pre('save', function (next) {
 
     return next()
 })
+
+// filter out inactive users
+userSchema.pre(/^find/, function (next) {
+    this.find({ active: { $ne: false } })
+
+    next()
+})
+
+
+
+
 
 // verify if passwords match
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
