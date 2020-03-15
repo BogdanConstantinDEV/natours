@@ -63,8 +63,7 @@ const tourSchema = new mongoose.Schema(
         },
         description: {
             type: String,
-            trim: true,
-            maxlength: [500, 'description length must be <= 500']
+            trim: true
         },
         imageCover: {
             type: String,
@@ -83,7 +82,30 @@ const tourSchema = new mongoose.Schema(
         secretTour: {
             type: Boolean,
             default: false
-        }
+        },
+        startLocation: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String
+        },
+        locations: [
+            {
+                type: {
+                    type: String,
+                    default: 'Point',
+                    enum: ['Point']
+                },
+                coordinates: [Number],
+                address: String,
+                description: String,
+                day: Number
+            }
+        ]
     },
     {
         toJSON: { virtuals: true },

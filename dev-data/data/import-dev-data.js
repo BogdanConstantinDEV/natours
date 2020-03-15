@@ -5,7 +5,7 @@ const TourModel = require('../../models/tourModel')
 
 dotenv.config({ path: './config.env' })
 
-const allTours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'))
+const allTours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'))
 
 
 
@@ -33,21 +33,21 @@ const importData = async () => {
     try {
         await TourModel.create(allTours)
         console.log('data imported')
-        process.exit()
     }
     catch (err) {
         console.log(err)
     }
+    process.exit()
 }
 const deleteData = async () => {
     try {
         await TourModel.deleteMany()
         console.log('data deleted')
-        process.exit()
     }
     catch (err) {
         console.log(err)
     }
+    process.exit()
 }
 if (process.argv[2] === '--import') {
     importData()
