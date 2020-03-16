@@ -105,6 +105,12 @@ const tourSchema = new mongoose.Schema(
                 description: String,
                 day: Number
             }
+        ],
+        guides: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User'
+            }
         ]
     },
     {
@@ -121,24 +127,29 @@ tourSchema.virtual('priceRON').get(function () {
     return `${this.price * 4.4} RON`
 })
 
-// document middleware
+
+
+// << QUERY MIDDLEWARE >>
+
+tourSchema.pre(/^find/, function (next) {
+    this.start = Date.now()
+    next()
+})
+
+tourSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt'
+    })
+
+    next()
+})
+
 tourSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true })
     next()
 })
 
-// query middleware
-tourSchema.pre(/^find/, function (next) {
-    // this.find({ secretTour: { $ne: true } })
-    this.start = Date.now()
-    next()
-})
-tourSchema.post(/^find/, function (docs, next) {
-    // console.log(`query completed in ${Date.now() - this.start} miliseconds`)
-    next()
-})
-
-// aggregation middleware
 tourSchema.pre('aggregate', function (next) {
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
     next()
