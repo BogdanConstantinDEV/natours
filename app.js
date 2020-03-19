@@ -7,6 +7,7 @@ const hpp = require('hpp')
 
 const tourRouter = require('./routes/tourRouter')
 const userRouter = require('./routes/userRouter')
+const reviewRouter = require('./routes/reviewRouter')
 const globalErrorHandler = require('./controllers/errorController')
 const AppError = require('./util/appError')
 
@@ -53,6 +54,7 @@ app.use(hpp({
 // routes
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
+app.use('/api/v1/reviews', reviewRouter)
 
 
 // error function for unknown requests

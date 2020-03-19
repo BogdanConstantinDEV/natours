@@ -11,10 +11,8 @@ const reviewSchema = new mongoose.Schema(
         rating: {
             type: Number,
             required: [true, 'Review must have a rating'],
-            enum: {
-                values: [1, 2, 3, 4, 5],
-                message: 'Rating must be between 1 and 5'
-            }
+            min: [1, 'Rating must be >= 1'],
+            max: [5, 'Rating must be <= 5']
         },
         createdAt: {
             type: Date,
@@ -36,6 +34,21 @@ const reviewSchema = new mongoose.Schema(
         toJSON: { virtuals: true }
     }
 )
+
+
+
+// << QUERY MIDDLEWARE >>
+reviewSchema.pre(/^find/, function (next) {
+
+    this.populate({
+        path: 'user',
+        select: 'name photo'
+    })
+
+    next()
+})
+
+
 
 const Review = new mongoose.model('Review', reviewSchema)
 module.exports = Review

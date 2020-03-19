@@ -127,6 +127,25 @@ tourSchema.virtual('priceRON').get(function () {
     return `${this.price * 4.4} RON`
 })
 
+// virtual populate reviews
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: '_id'
+})
+
+
+
+
+
+// << DOCUMENT MIDDLEWARE >>
+
+tourSchema.pre('save', function (next) {
+    this.slug = slugify(this.name, { lower: true })
+    next()
+})
+
+
 
 
 // << QUERY MIDDLEWARE >>
@@ -145,10 +164,6 @@ tourSchema.pre(/^find/, function (next) {
     next()
 })
 
-tourSchema.pre('save', function (next) {
-    this.slug = slugify(this.name, { lower: true })
-    next()
-})
 
 tourSchema.pre('aggregate', function (next) {
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } })
