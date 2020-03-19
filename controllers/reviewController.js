@@ -22,6 +22,9 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 
 // create review
 exports.createReview = catchAsync(async (req, res, next) => {
+
+    if (!req.body.tour) req.body.tour = req.params.tourId
+    if (!req.body.user) req.body.user = req.user._id
     const review = await ReviewModel.create(req.body)
 
     res.status(201).json({

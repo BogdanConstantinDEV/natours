@@ -1,9 +1,16 @@
 const express = require('express')
 const tourController = require('../controllers/tourController')
 const authController = require('../controllers/authController')
+const reviewRouter = require('./reviewRouter')
 
 
 const router = express.Router()
+router.use('/:tourId/reviews', reviewRouter)
+
+
+
+
+
 
 // top five tours
 router.route('/top-five-tours')
