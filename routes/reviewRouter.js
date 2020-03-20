@@ -16,7 +16,11 @@ router.route('/')
 
 
 router.route('/:id')
-    .get(reviewController.getReview)
+    .get(
+        authController.protect,
+        reviewController.setTourUserIds,
+        reviewController.getReview
+    )
     .delete(reviewController.deleteReview)
 
 

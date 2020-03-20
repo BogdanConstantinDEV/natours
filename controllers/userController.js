@@ -1,4 +1,4 @@
-const UserModel = require('../models/userModel')
+const User = require('../models/userModel')
 const catchAsync = require('../util/catchAsync')
 const AppError = require('../util/appError')
 const factory = require('./handlerFactory')
@@ -21,17 +21,11 @@ const filterObj = (obj, ...allowedFields) => {
 
 
 
-// get all users
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-
-    const users = await UserModel.find()
-
-    res.status(200).json({
-        status: 'success',
-        results: users.length,
-        data: users
-    })
-})
+exports.getAllUsers = factory.getAll(User)
+exports.deleteMe = factory.deleteOne()
+exports.getUser = factory.getOne(User)
+exports.updateUser = factory.updateOne(User)
+exports.deleteUser = factory.deleteOne(User)
 
 
 
@@ -47,7 +41,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
     // update user data
     const filteredBody = filterObj(req.body, 'name', 'email')
-    const user = await UserModel.findByIdAndUpdate(req.user._id, filteredBody, {
+    const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
         new: true,
         runValidators: true
     })
@@ -62,16 +56,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
 
 
-// delete current user
-exports.deleteMe = catchAsync(async (req, res, next) => {
-    await UserModel.findByIdAndUpdate(req.user._id, { active: false })
-
-    res.status(204).json({
-        status: 'success',
-        data: null
-    })
-})
-
 
 
 
@@ -83,16 +67,3 @@ exports.createUser = (req, res) => {
         message: 'This route is not yet defined'
     })
 }
-exports.getUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined'
-    })
-}
-exports.updateUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined'
-    })
-}
-exports.deleteUser = factory.deleteOne(UserModel)
