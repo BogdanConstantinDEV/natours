@@ -20,7 +20,15 @@ router.patch('/update-my-password',
 
 
 
-// update user data
+// get current user
+router.route('/me')
+    .get(
+        authController.protect,
+        userController.getMe,
+        userController.getUser
+    )
+
+// update current user
 router.patch('/update-me',
     authController.protect,
     userController.updateMe

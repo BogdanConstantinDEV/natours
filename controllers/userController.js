@@ -6,6 +6,15 @@ const factory = require('./handlerFactory')
 
 
 
+exports.getAllUsers = factory.getAll(User)
+exports.getUser = factory.getOne(User)
+exports.updateUser = factory.updateOne(User)
+exports.deleteUser = factory.deleteOne(User)
+
+
+
+
+
 // filter body object
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {}
@@ -21,17 +30,21 @@ const filterObj = (obj, ...allowedFields) => {
 
 
 
-exports.getAllUsers = factory.getAll(User)
-exports.deleteMe = factory.deleteOne()
-exports.getUser = factory.getOne(User)
-exports.updateUser = factory.updateOne(User)
-exports.deleteUser = factory.deleteOne(User)
+// get current user
+exports.getMe = (req, res, next) => {
+    req.params.id = req.user._id
+    next()
+}
 
 
 
 
 
-// update user data
+
+
+
+
+// update current user
 exports.updateMe = catchAsync(async (req, res, next) => {
 
     // check if user is trying to update password
@@ -57,6 +70,15 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
 
 
+// delete current user
+exports.deleteMe = catchAsync(async (req, res, next) => {
+    const user = await User.findByIdAndUpdate(req.user._id, { active: false })
+
+    res.status(200).json({
+        status: 'success',
+        data: { user }
+    })
+})
 
 
 
