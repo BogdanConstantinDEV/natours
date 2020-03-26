@@ -16,9 +16,11 @@ router.use(authController.protect)
 router.route('/')
     .get(
         authController.restrictTo('admin'),
+        reviewController.setTourUserIds,
         reviewController.getAllReviews)
     .post(
         authController.restrictTo('user'),
+        reviewController.setTourUserIds,
         reviewController.createReview
     )
 
