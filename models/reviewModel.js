@@ -45,7 +45,11 @@ reviewSchema.pre(/^find/, function (next) {
 })
 
 
-// get ratings average on tour
+
+
+
+
+// calculate and set ratings average on tour
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
     const stats = await this.aggregate([
         {
@@ -60,19 +64,39 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
         }
     ])
 
-    await Tour.findByIdAndUpdate(
-        tourId,
-        {
-            ratingsAverage: stats[0].avgRating,
-            ratingsQuantity: stats[0].sumRatings
-        },
-        { useFindAndModify: false }
-    )
+    if (stats.length > 0) {
+        await Tour.findByIdAndUpdate(tourId,
+            {
+                ratingsAverage: stats[0].avgRating,
+                ratingsQuantity: stats[0].sumRatings
+            })
+    } else {
+        await Tour.findByIdAndUpdate(tourId,
+            {
+                ratingsAverage: 4.5,
+                ratingsQuantity: 0
+            })
+    }
 }
 
 reviewSchema.post('save', function () {
     this.constructor.calcAverageRatings(this.tour)
 })
+
+
+// update tour rating when delete/update review
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+    this.r = await this.findOne()
+    next()
+})
+reviewSchema.post(/^findOneAnd/, function () {
+    this.r.constructor.calcAverageRatings(this.r.tour)
+})
+
+
+
+
+
 
 
 
