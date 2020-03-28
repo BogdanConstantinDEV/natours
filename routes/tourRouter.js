@@ -30,6 +30,12 @@ router.route('/monthly-plan/:year')
 
 
 
+// get tours within distance
+router.get('/tours-within/:distance/center/:latlng/unit/:unit',
+    tourController.getToursWithin
+)
+
+
 
 
 
