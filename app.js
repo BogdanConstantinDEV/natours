@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
@@ -12,13 +13,17 @@ const globalErrorHandler = require('./controllers/errorController')
 const AppError = require('./util/appError')
 
 const app = express()
-
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
 
 
 
 
 
 // GLOBAL MIDDLEWARE
+
+// sever static files
+app.use(express.static(path.join(__dirname, 'public')))
 
 // set security http headers
 app.use(helmet())
@@ -52,6 +57,10 @@ app.use(hpp({
 
 
 // routes
+app.use('/', (req, res) => {
+    res.status(200).render('base')
+})
+
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)
