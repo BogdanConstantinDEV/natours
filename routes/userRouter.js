@@ -10,9 +10,10 @@ const router = express.Router()
 
 
 
-// sign up/log-in
+// sign up/log-in/log-out
 router.post('/signup', authController.signUp)
 router.post('/login', authController.login)
+router.get('/logout', authController.logout)
 
 // forgot/restart password
 router.post('/forgot-password', authController.forgotPassword)

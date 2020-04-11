@@ -5,10 +5,12 @@ const rateLimit = require('express-rate-limit')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
+const cookieParser = require('cookie-parser')
 
 const tourRouter = require('./routes/tourRouter')
 const userRouter = require('./routes/userRouter')
 const reviewRouter = require('./routes/reviewRouter')
+const viewsRouter = require('./routes/viewsRouter')
 const globalErrorHandler = require('./controllers/errorController')
 const AppError = require('./util/appError')
 
@@ -38,6 +40,7 @@ app.use('/api', limit)
 
 // body parser
 app.use(express.json({ limit: '10kb' }))
+app.use(express.urlencoded({ limit: '10kb', extended: true }))
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize())
@@ -50,6 +53,8 @@ app.use(hpp({
     whitelist: ['ratingsAverage', 'ratingsQuantity', 'duration', 'maxGroupSize', 'difficulty', 'price']
 }))
 
+// recive cookie
+app.use(cookieParser())
 
 
 
@@ -57,10 +62,7 @@ app.use(hpp({
 
 
 // routes
-app.use('/', (req, res) => {
-    res.status(200).render('base')
-})
-
+app.use('/', viewsRouter)
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/reviews', reviewRouter)

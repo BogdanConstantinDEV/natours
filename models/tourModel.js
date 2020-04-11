@@ -157,13 +157,7 @@ tourSchema.pre('save', function (next) {
 // << QUERY MIDDLEWARE >>
 
 tourSchema.pre(/^find/, function (next) {
-    this.start = Date.now()
-    next()
-})
-
-tourSchema.pre(/^find/, function (next) {
-    this.populate({ path: 'guides', select: 'name' })
-
+    this.populate({ path: 'guides', select: '-__v -passwordChangedAt' })
     next()
 })
 
@@ -173,6 +167,9 @@ tourSchema.pre(/^find/, function (next) {
 //     next()
 // })
 
-const Tour = new mongoose.model('Tour', tourSchema)
 
+
+
+
+const Tour = new mongoose.model('Tour', tourSchema)
 module.exports = Tour
