@@ -3,11 +3,11 @@ const mongoose = require('mongoose')
 dotenv.config({ path: './config.env' })
 
 // handle any uncaught errors
-process.on('uncaughtException', err => {
-    console.log('UNCAUGHT EXCEPTION 💥 Shutting down...')
-    console.log(err.name, err.message)
-    process.exit(1)
-})
+// process.on('uncaughtException', err => {
+//     console.log('UNCAUGHT EXCEPTION 💥 Shutting down...')
+//     console.log(err.name, err.message)
+//     process.exit(1)
+// })
 
 const app = require('./app')
 

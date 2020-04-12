@@ -44,3 +44,12 @@ exports.getMyAccount = (req, res) => {
         title: 'My Account',
     })
 }
+
+
+
+// get my account
+exports.getSignup = (req, res) => {
+    res.status(200).render('singup', {
+        title: 'Sign up',
+    })
+}

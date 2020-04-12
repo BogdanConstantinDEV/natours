@@ -1,12 +1,14 @@
 import '@babel/polyfill'
 import { getMap } from './mapBox'
 import { login, logout } from './login'
+import { signup } from './signup'
 import { updateSettings } from './updateSettings'
 
 
 // DOM ELEMENTS
 const mapDiv = document.querySelector('#map')
 const loginForm = document.querySelector('.form__login')
+const signupForm = document.querySelector('.form__singup')
 const logoutButton = document.querySelector('.nav__el--logout')
 const updateUserDataForm = document.querySelector('.form.form-user-data')
 const updateUserPasswordForm = document.querySelector('.form-user-password')
@@ -75,5 +77,20 @@ if (updateUserPasswordForm) {
         updateUserPasswordForm.querySelector('#password-confirm').value = ''
 
         updateUserPasswordForm.querySelector('.btn--submit-password').textContent = 'Save settings'
+    })
+}
+
+
+
+
+// sign up
+if (signupForm) {
+    signupForm.addEventListener('submit', e => {
+        e.preventDefault()
+        const name = signupForm.querySelector('#name').value
+        const email = signupForm.querySelector('#email').value
+        const password = signupForm.querySelector('#password').value
+        const passwordConfirm = signupForm.querySelector('#password-confirm').value
+        signup({ name, email, password, passwordConfirm })
     })
 }
