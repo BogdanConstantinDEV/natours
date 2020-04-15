@@ -8908,7 +8908,6 @@ var updateUserPasswordForm = document.querySelector('.form-user-password'); // D
 
 if (mapDiv) {
   var locations = JSON.parse(mapDiv.dataset.locations);
-  console.log(locations);
   (0, _mapBox.getMap)(locations);
 } // log in
 

@@ -22,7 +22,6 @@ const updateUserPasswordForm = document.querySelector('.form-user-password')
 // mapbox
 if (mapDiv) {
     const locations = JSON.parse(mapDiv.dataset.locations)
-    console.log(locations)
     getMap(locations)
 }
 

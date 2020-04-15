@@ -39,7 +39,6 @@ const handleTokenExpiredError = () => {
 
 
 const sendErrorDev = (err, req, res) => {
-    console.log(err)
     if (req.originalUrl.startsWith('/api')) {
         return res.status(err.statusCode).json({
             status: err.status,
