@@ -49,9 +49,11 @@ if (logoutButton) {
 if (updateUserDataForm) {
     updateUserDataForm.addEventListener('submit', e => {
         e.preventDefault()
-        const name = updateUserDataForm.querySelector('#name').value
-        const email = updateUserDataForm.querySelector('#email').value
-        updateSettings({ name, email }, 'data')
+        const form = new FormData()
+        form.append('name', updateUserDataForm.querySelector('#name').value)
+        form.append('email', updateUserDataForm.querySelector('#email').value)
+        form.append('photo', updateUserDataForm.querySelector('#photo').files[0])
+        updateSettings(form, 'data')
     })
 }
 
@@ -62,9 +64,7 @@ if (updateUserDataForm) {
 if (updateUserPasswordForm) {
     updateUserPasswordForm.addEventListener('submit', async e => {
         e.preventDefault()
-
         updateUserPasswordForm.querySelector('.btn--submit-password').textContent = 'Updating...'
-
 
         const oldPassword = updateUserPasswordForm.querySelector('#password-current').value
         const newPassword = updateUserPasswordForm.querySelector('#password').value

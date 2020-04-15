@@ -30,15 +30,19 @@ router.patch('/reset-password/:token', authController.resetPassword)
 router.use(authController.protect)
 
 
+// update current user data
+router.patch('/update-me',
+    userController.uploadUserPhoto,
+    userController.resizePhoto,
+    userController.updateMe
+)
+
 // update current user password
 router.patch('/update-my-password', authController.updatePassword)
 
 // get current user
 router.get('/me', userController.getMe, userController.getUser)
 
-// update current user
-router.patch('/update-me', userController.updateMe
-)
 // delete current user
 router.delete('/delete-me', userController.deleteMe
 )

@@ -1,3 +1,6 @@
+const multer = require('multer')
+const sharp = require('sharp')
+
 const User = require('../models/userModel')
 const catchAsync = require('../util/catchAsync')
 const AppError = require('../util/appError')
@@ -6,11 +9,39 @@ const factory = require('./handlerFactory')
 
 
 
-exports.getAllUsers = factory.getAll(User)
-exports.getUser = factory.getOne(User)
-exports.updateUser = factory.updateOne(User)
-exports.deleteUser = factory.deleteOne(User)
+//      =========       UPLOAD && RESIZE user photo     =========   -->
 
+// upload photo
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true)
+    } else {
+        cb(new AppError('There is now image! Upload only images...😒', 400), false)
+    }
+}
+const upload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: multerFilter
+})
+exports.uploadUserPhoto = upload.single('photo')
+
+
+// resize photo
+exports.resizePhoto = (req, res, next) => {
+    if (!req.file) return next()
+    req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`
+
+    sharp(req.file.buffer)
+        .resize(500, 500)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/users/${req.file.filename}`)
+    next()
+}
+
+
+
+//      ==================                    ==================   <--
 
 
 
@@ -27,6 +58,13 @@ const filterObj = (obj, ...allowedFields) => {
 
 
 
+exports.getAllUsers = factory.getAll(User)
+exports.getUser = factory.getOne(User)
+exports.updateUser = factory.updateOne(User)
+exports.deleteUser = factory.deleteOne(User)
+
+
+
 
 
 
@@ -39,13 +77,9 @@ exports.getMe = (req, res, next) => {
 
 
 
-
-
-
-
-
 // update current user
 exports.updateMe = catchAsync(async (req, res, next) => {
+    console.log(req.file)
 
     // check if user is trying to update password
     if (req.body.password || req.body.passwordConfirm) {
@@ -54,6 +88,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
     // update user data
     const filteredBody = filterObj(req.body, 'name', 'email')
+    if (req.file) filteredBody.photo = req.file.filename
     const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
         new: true,
         runValidators: true
@@ -65,8 +100,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
         data: user
     })
 })
-
-
 
 
 

@@ -8931,12 +8931,11 @@ if (logoutButton) {
 if (updateUserDataForm) {
   updateUserDataForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = updateUserDataForm.querySelector('#name').value;
-    var email = updateUserDataForm.querySelector('#email').value;
-    (0, _updateSettings.updateSettings)({
-      name: name,
-      email: email
-    }, 'data');
+    var form = new FormData();
+    form.append('name', updateUserDataForm.querySelector('#name').value);
+    form.append('email', updateUserDataForm.querySelector('#email').value);
+    form.append('photo', updateUserDataForm.querySelector('#photo').files[0]);
+    (0, _updateSettings.updateSettings)(form, 'data');
   });
 } // update my password
 
@@ -9025,7 +9024,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58165" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53487" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
